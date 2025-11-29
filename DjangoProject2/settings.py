@@ -82,8 +82,15 @@ WSGI_APPLICATION = 'DjangoProject2.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.getenv('DB_NAME', 'django_db'),
+        'USER': os.getenv('DB_USER', 'django_user'),
+        'PASSWORD': os.getenv('DB_PASSWORD', 'django_password'),
+        'HOST': 'localhost',  # Matches the service name in docker-compose.yml
+        'PORT': '3306',
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"
+        }
     }
 }
 
@@ -123,7 +130,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / "demo/static"]
+STATICFILES_DIRS = [
+    BASE_DIR / "demo/static/demo",
+]
+STATIC_ROOT = BASE_DIR / 'static'
+
+# Media files (User uploaded content)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -138,13 +152,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # 4. Generate an App Password for 'Mail'
 # 5. Replace 'YOUR_APP_PASSWORD_HERE' below with the 16-character app password
 
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', 'sanchetipooja64@gmail.com')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')  # Set this in your environment variables
-DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'lowpoceat@gmail.com')
+DEFAULT_FROM_EMAIL = 'Your App <lowpoceat@gmail.com>'  # Replace with your desired "From" email address
 
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/login/'

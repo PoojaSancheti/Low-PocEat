@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from django.utils.timezone import now
 from datetime import timedelta
 
+def default_expiration():
+    return now() + timedelta(minutes=10)
 
 class HealthConditions(models.Model):
     name = models.CharField(max_length=100, unique=True)
@@ -34,7 +36,6 @@ class Meal(models.Model):
     fat =  models.TextField()# Fat per serving
     protein =  models.TextField()# Protein per serving
     carbohydrates =  models.TextField() # Carbohydrates per serving
-    vitamin_c = models.TextField()  # Vitamin C per serving
 
     def __str__(self):
         return self.name
@@ -61,22 +62,6 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return self.user.username
-
-def default_expiration():
-    return now() + timedelta(hours=24)
-
-class EmailVerificationCode(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='verification_code')
-    code = models.CharField(max_length=32, unique=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    expires_at = models.DateTimeField(default=default_expiration)
-    is_valid = models.BooleanField(default=True)
-
-    def is_expired(self):
-        return now() > self.expires_at
-
-    def __str__(self):
-        return f"Verification Code for {self.user.username}"
 
 class Feedback(models.Model):
     name = models.CharField(max_length=100)

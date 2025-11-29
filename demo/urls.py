@@ -4,7 +4,8 @@ from . import views
 
 urlpatterns = [
     # Public pages
-    path('', login_required(views.home_view), name='home'),
+    path('', views.home_unauthorized, name='home_unauthorized'),
+    path('dashboard/', login_required(views.home_view), name='home'),
     path('signup/', views.signup_view, name='signup'),
     path('login/', views.login_view, name='login'),
     path('password_reset/', views.CustomPasswordResetView.as_view(), name='password_reset'),
