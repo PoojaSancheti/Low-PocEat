@@ -62,7 +62,7 @@ Low-PocEats/
 1. **Clone the repository**
    ```bash
    git clone https://github.com/PoojaSancheti/Low-PocEat.git
-   cd Low-PocEats
+   cd proj1
    ```
 
 2. **Create a virtual environment**
