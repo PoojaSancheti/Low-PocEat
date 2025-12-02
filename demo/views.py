@@ -227,10 +227,29 @@ def contact_us(request):
 
 # ----------------- Password reset -----------------
 
-class CustomPasswordResetView(PasswordResetView):
-    template_name = 'demo/password_reset.html'
-    email_template_name = 'demo/password_reset_email.html'
-    success_url = reverse_lazy('password_reset_done')
+def custom_password_reset(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        new_password = request.POST.get('new_password')
+        confirm_password = request.POST.get('confirm_password')
+        
+        if new_password != confirm_password:
+            messages.error(request, 'Passwords do not match.')
+            return redirect('password_reset')
+            
+        try:
+            user = User.objects.get(username=username)
+            user.set_password(new_password)
+            user.save()
+            messages.success(request, 'Your password has been reset successfully. You can now log in with your new password.')
+            return redirect('login')
+        except User.DoesNotExist:
+            messages.error(request, 'User with this username does not exist.')
+            return redirect('password_reset')
+    
+    return render(request, 'demo/password_reset.html')
+
+# Remove email-related password reset views as they won't be used
 
 
 class CustomPasswordResetDoneView(PasswordResetDoneView):

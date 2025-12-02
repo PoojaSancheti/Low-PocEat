@@ -4,15 +4,8 @@ A Django-based web application for healthy, low-cost meal planning and recipe ma
 
 ## Features
 
-### 🔐 User Authentication
-- User registration with email verification via OTP
-- Secure login/logout functionality
-- Custom password reset with email notifications
-- Gmail SMTP integration for email services
-
 ### 👤 User Profile Management
 - Comprehensive user profiles with health information
-- Age, height, weight tracking
 - Dietary preferences and food allergy management
 - Health condition tracking for personalized recommendations
 
@@ -26,15 +19,12 @@ A Django-based web application for healthy, low-cost meal planning and recipe ma
 ### 📧 Communication Features
 - Contact forms for user feedback
 - Password reset functionality
-- Email notifications for account verification
 
 ## Technology Stack
 
 - **Backend**: Django 5.1.3 (Python)
-- **Database**: SQLite3
+- **Database**: MySQL
 - **Frontend**: HTML, CSS, JavaScript
-- **Email Service**: Gmail SMTP
-- **Authentication**: Django's built-in authentication system
 
 ## Project Structure
 
@@ -57,7 +47,6 @@ Low-PocEats/
 │   │       └── ...
 │   └── static/            # Static files
 ├── manage.py              # Django management script
-├── db.sqlite3            # SQLite database
 └── README.md             # Project documentation
 ```
 
@@ -72,8 +61,8 @@ Low-PocEats/
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/PoojaSancheti/Low-PocEats.git
-   cd Low-PocEats
+   git clone https://github.com/PoojaSancheti/Low-PocEat.git
+   cd proj1
    ```
 
 2. **Create a virtual environment**
@@ -87,11 +76,9 @@ Low-PocEats/
    pip install django
    ```
 
-4. **Configure email settings**
+4. **Configure database settings**
    - Open `DjangoProject2/settings.py`
-   - Update `EMAIL_HOST_USER` with your Gmail address
-   - Update `EMAIL_HOST_PASSWORD` with your Gmail app password
-   - Update `DEFAULT_FROM_EMAIL` with your desired sender email
+
 
 5. **Run migrations**
    ```bash
@@ -111,17 +98,6 @@ Low-PocEats/
 8. **Access the application**
    - Open your browser and go to `http://127.0.0.1:8000/`
 
-## Email Configuration
-
-To enable email functionality:
-
-1. Enable 2-Factor Authentication on your Gmail account
-2. Generate an App Password: https://myaccount.google.com/apppasswords
-3. Update the following in `DjangoProject2/settings.py`:
-   ```python
-   EMAIL_HOST_USER = 'your-email@gmail.com'
-   EMAIL_HOST_PASSWORD = 'your-app-password'
-   DEFAULT_FROM_EMAIL = 'your-display-email@example.com'
    ```
 
 ## Usage
@@ -139,16 +115,11 @@ To enable email functionality:
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
 ## Contact
 
 - **Developer**: Pooja Sancheti
-- **Email**: sanchetipooja64@gmail.com
+- **Email**: poojasancheti64@gmail.com
 - **GitHub**: https://github.com/PoojaSancheti
 
 ---
 
-*Built with ❤️ using Django*

@@ -8,10 +8,7 @@ urlpatterns = [
     path('dashboard/', login_required(views.home_view), name='home'),
     path('signup/', views.signup_view, name='signup'),
     path('login/', views.login_view, name='login'),
-    path('password_reset/', views.CustomPasswordResetView.as_view(), name='password_reset'),
-    path('password_reset/done/', views.CustomPasswordResetDoneView.as_view(), name='password_reset_done'),
-    path('password_reset_confirm/<uidb64>/<token>/', views.CustomPasswordResetConfirmView.as_view(), name='password_reset_confirm'),
-    path('password_reset_complete/', views.CustomPasswordResetCompleteView.as_view(), name='password_reset_complete'),
+    path('password_reset/', views.custom_password_reset, name='password_reset'),
     
     # Authenticated user pages
     path('profile/', views.user_profile, name='user_profile'),
