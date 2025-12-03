@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: poc-eat-service
+  labels:
+    app: poc-eat
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+    service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
+spec:
+  type: LoadBalancer
+  selector:
+    app: poc-eat
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 8000
+    - name: https
+      protocol: TCP
+      port: 443
+      targetPort: 8000
+  sessionAffinity: None
+  externalTrafficPolicy: Cluster
