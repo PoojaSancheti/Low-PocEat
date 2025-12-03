@@ -1,0 +1,134 @@
+# -------------------------------
+# Namespace
+# -------------------------------
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: "2401173"
+---
+# -------------------------------
+# PersistentVolumeClaim
+# -------------------------------
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: lowpoceat-static-pvc
+  namespace: "2401173"
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+# -------------------------------
+# Deployment
+# -------------------------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lowpoceat-deployment
+  namespace: "2401173"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lowpoceat
+  template:
+    metadata:
+      labels:
+        app: lowpoceat
+    spec:
+      imagePullSecrets:
+        - name: nexus-secret
+
+      containers:
+        - name: lowpoceat-container
+          image: nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/2401173/lowpoc-eat:latest
+          imagePullPolicy: Always
+
+          ports:
+            - containerPort: 8000
+
+          env:
+            - name: PYTHONUNBUFFERED
+              value: "1"
+
+            - name: DJANGO_SETTINGS_MODULE
+              value: "proj1.settings"
+
+            # Optional gunicorn tuning
+            - name: GUNICORN_CMD_ARGS
+              value: "--workers 1 --timeout 180"
+
+          volumeMounts:
+            - name: lowpoceat-static
+              mountPath: /app/static
+
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 15
+            periodSeconds: 10
+
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 40
+            periodSeconds: 30
+
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "512Mi"
+            limits:
+              cpu: "1"
+              memory: "1Gi"
+
+      volumes:
+        - name: lowpoceat-static
+          persistentVolumeClaim:
+            claimName: lowpoceat-static-pvc
+---
+# -------------------------------
+# Service
+# -------------------------------
+apiVersion: v1
+kind: Service
+metadata:
+  name: lowpoceat-service
+  namespace: "2401173"
+spec:
+  selector:
+    app: lowpoceat
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
+  type: ClusterIP
+---
+# -------------------------------
+# Ingress
+# -------------------------------
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: lowpoceat-ingress
+  namespace: "2401173"
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: lowpoceat.imcc.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: lowpoceat-service
+                port:
+                  number: 8000
