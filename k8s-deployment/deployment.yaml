@@ -44,7 +44,7 @@ spec:
 
       containers:
         - name: lowpoceat-container
-          image: nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085/2401173/lowpoc-eat:latest
+          image: 127.0.0.1:30085/2401173/lowpoc-eat:latest
           imagePullPolicy: Always
 
           ports:
