@@ -51,15 +51,33 @@ spec:
             - containerPort: 8000
 
           env:
-            - name: PYTHONUNBUFFERED
-              value: "1"
-
-            - name: DJANGO_SETTINGS_MODULE
-              value: "proj1.settings"
-
-            # Optional gunicorn tuning
-            - name: GUNICORN_CMD_ARGS
-              value: "--workers 1 --timeout 180"
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: DB_USER
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: DB_PASSWORD
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: DB_NAME
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: mysql-config
+                  key: DB_HOST
+            - name: DB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: mysql-config
+                  key: DB_PORT
+            - name: DEBUG
+              value: "0"
 
           volumeMounts:
             - name: lowpoceat-static
