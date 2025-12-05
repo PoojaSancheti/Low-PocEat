@@ -7,70 +7,50 @@ pipeline {
 
     agent {
         kubernetes {
-            yaml """
+            yaml '''
 apiVersion: v1
 kind: Pod
 spec:
-  securityContext:
-    fsGroup: 1000
   containers:
+  - name: sonar-scanner
+    image: sonarsource/sonar-scanner-cli
+    command:
+    - cat
+    tty: true
+  - name: kubectl
+    image: bitnami/kubectl:latest
+    command:
+    - cat
+    tty: true
+    securityContext:
+      runAsUser: 0
+      readOnlyRootFilesystem: false
+    env:
+    - name: KUBECONFIG
+      value: /kube/config        
+    volumeMounts:
+    - name: kubeconfig-secret
+      mountPath: /kube/config
+      subPath: kubeconfig
   - name: dind
     image: docker:dind
     securityContext:
-      privileged: true
-      runAsUser: 0
-    command: ["sh", "-c"]
-    args:
-      - |
-        # Start Docker daemon
-        dockerd-entrypoint.sh --host=tcp://0.0.0.0:2375 --host=unix:///var/run/docker.sock --tls=false &
-        # Wait for Docker daemon to start
-        sleep 5
-        # Keep the container running
-        tail -f /dev/null
+      privileged: true  # Needed to run Docker daemon
     env:
     - name: DOCKER_TLS_CERTDIR
-      value: ""
+      value: ""  # Disable TLS for simplicity
     volumeMounts:
-    - name: docker-graph-storage
-      mountPath: /var/lib/docker
-    - name: workspace-volume
-      mountPath: /home/jenkins/agent
-    readinessProbe:
-      tcpSocket:
-        port: 2375
-      initialDelaySeconds: 5
-      periodSeconds: 5
-
-  - name: jnlp
-    image: jenkins/inbound-agent:latest-jdk11
-    args: ['\$(JENKINS_SECRET)', '\$(JENKINS_NAME)']
-    volumeMounts:
-    - name: workspace-volume
-      mountPath: /home/jenkins/agent
-
-  - name: sonar-scanner
-    image: sonarsource/sonar-scanner-cli
-    command: ["cat"]
-    tty: true
-    volumeMounts:
-    - name: workspace-volume
-      mountPath: /home/jenkins/agent
-
-  - name: kubectl
-    image: bitnami/kubectl:latest
-    command: ["cat"]
-    tty: true
-    volumeMounts:
-    - name: workspace-volume
-      mountPath: /home/jenkins/agent
-
+    - name: docker-config
+      mountPath: /etc/docker/daemon.json
+      subPath: daemon.json  # Mount the file directly here
   volumes:
-  - name: docker-graph-storage
-    emptyDir: {}
-  - name: workspace-volume
-    emptyDir: {}
-"""
+  - name: docker-config
+    configMap:
+      name: docker-daemon-config
+  - name: kubeconfig-secret
+    secret:
+      secretName: kubeconfig-secret
+'''
         }
     }
 
