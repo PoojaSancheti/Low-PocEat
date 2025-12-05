@@ -1,52 +1,55 @@
-
 pipeline {
 
     agent {
         kubernetes {
+            // IMPORTANT: YAML must be flush-left inside the string, no extra Groovy indentation
             yaml '''
-            apiVersion: v1
-            kind: Pod
-            spec:
-            containers:
-            - name: sonar-scanner
-                image: sonarsource/sonar-scanner-cli
-                command:
-                - cat
-                tty: true
-            - name: kubectl
-                image: bitnami/kubectl:latest
-                command:
-                - cat
-                tty: true
-                securityContext:
-                runAsUser: 0
-                readOnlyRootFilesystem: false
-                env:
-                - name: KUBECONFIG
-                value: /kube/config        
-                volumeMounts:
-                - name: kubeconfig-secret
-                mountPath: /kube/config
-                subPath: kubeconfig
-            - name: dind
-                image: docker:dind
-                securityContext:
-                privileged: true  # Needed to run Docker daemon
-                env:
-                - name: DOCKER_TLS_CERTDIR
-                value: ""  # Disable TLS for simplicity
-                volumeMounts:
-                - name: docker-config
-                mountPath: /etc/docker/daemon.json
-                subPath: daemon.json  # Mount the file directly here
-            volumes:
-            - name: docker-config
-                configMap:
-                name: docker-daemon-config
-            - name: kubeconfig-secret
-                secret:
-                secretName: kubeconfig-secret
-            '''
+apiVersion: v1
+kind: Pod
+spec:
+  containers:
+  - name: dind
+    image: docker:dind
+    securityContext:
+      privileged: true  # Needed to run Docker daemon
+    env:
+    - name: DOCKER_TLS_CERTDIR
+      value: ""         # Disable TLS for simplicity
+    volumeMounts:
+    - name: docker-config
+      mountPath: /etc/docker/daemon.json
+      subPath: daemon.json  # Mount the file directly here
+
+  - name: sonar-scanner
+    image: sonarsource/sonar-scanner-cli
+    command:
+    - cat
+    tty: true
+
+  - name: kubectl
+    image: bitnami/kubectl:latest
+    command:
+    - cat
+    tty: true
+    securityContext:
+      runAsUser: 0
+      readOnlyRootFilesystem: false
+    env:
+    - name: KUBECONFIG
+      value: /kube/config        
+    volumeMounts:
+    - name: kubeconfig-secret
+      mountPath: /kube/config
+      subPath: kubeconfig
+
+  volumes:
+  - name: docker-config
+    configMap:
+      name: docker-daemon-config
+  - name: kubeconfig-secret
+    secret:
+      secretName: kubeconfig-secret
+'''
         }
     }
 
@@ -54,7 +57,7 @@ pipeline {
 
     environment {
         DOCKER_IMAGE  = "low-poceat"
-        DOCKER_HOST   = "tcp://localhost:2375"
+        // DOCKER_HOST removed -> use default unix:///var/run/docker.sock inside dind
         SONAR_TOKEN   = "sqp_f42fc7b9e4433f6f08040c3f2303f1e5cc5524c1"
         REGISTRY_HOST = "nexus-service-for-docker-hosted-registry.nexus.svc.cluster.local:8085"
         REGISTRY      = "${REGISTRY_HOST}/2401173"
@@ -108,7 +111,7 @@ pipeline {
                           -v \$PWD:/app \
                           -w /app \
                           ${DOCKER_IMAGE}:latest \
-                          bash -c "pip install -r requirements.txt && python -m pytest tests/ --maxfail=1 --disable-warnings --cov=./ --cov-report=xml"
+                          bash -c "pip install -r requirements.txt && pip install pytest pytest-cov && python -m pytest tests/ --maxfail=1 --disable-warnings --cov=./ --cov-report=xml"
                     """
                 }
             }
