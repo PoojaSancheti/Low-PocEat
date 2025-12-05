@@ -1,7 +1,3 @@
-properties([
-  pipelineTriggers([]),
-  durabilityHint('PERFORMANCE_OPTIMIZED')
-])
 
 pipeline {
 
