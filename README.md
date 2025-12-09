@@ -118,7 +118,6 @@ Low-PocEats/
 ## Contact
 
 - **Developer**: Pooja Sancheti
-- **Email**: poojasancheti64@gmail.com
 - **GitHub**: https://github.com/PoojaSancheti
 
 ---
