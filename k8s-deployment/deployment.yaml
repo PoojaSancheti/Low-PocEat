@@ -4,7 +4,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: static-pvc
+  name: lowpoceat-static-pvc
   namespace: "2401173"
 spec:
   storageClassName: local-path    # use the cluster's local-path storage class
