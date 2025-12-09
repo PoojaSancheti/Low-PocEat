@@ -11,8 +11,8 @@ A Django-based web application for healthy, low-cost meal planning and recipe ma
 
 ### 🍽️ Recipe Management
 - Extensive recipe database with filtering options
-- Filter by meal type (breakfast, lunch, dinner, snacks)
-- Diet suitability (vegetarian, vegan, keto, etc.)
+- Filter by meal type (breakfast, lunch, dinner)
+- Diet suitability (vegetarian, vegann non-veg, etc.)
 - Health condition compatibility
 - Cost-based filtering for budget-conscious users
 
@@ -118,7 +118,6 @@ Low-PocEats/
 ## Contact
 
 - **Developer**: Pooja Sancheti
-- **Email**: poojasancheti64@gmail.com
 - **GitHub**: https://github.com/PoojaSancheti
 
 ---
