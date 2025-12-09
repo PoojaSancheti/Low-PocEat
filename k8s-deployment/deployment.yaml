@@ -1,29 +1,22 @@
-# -------------------------------
-# Namespace
-# -------------------------------
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: "2401173"
----
-# -------------------------------
-# PersistentVolumeClaim
-# -------------------------------
+# =====================================================================
+# PERSISTENT VOLUME CLAIM (STATIC FILES)
+# =====================================================================
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: lowpoceat-static-pvc
   namespace: "2401173"
 spec:
+  storageClassName: hostpath   # <-- fix for unbound PVC
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
       storage: 1Gi
 ---
-# -------------------------------
-# Deployment
-# -------------------------------
+# =====================================================================
+# DEPLOYMENT
+# =====================================================================
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -68,13 +61,13 @@ spec:
                   key: DB_NAME
             - name: DB_HOST
               valueFrom:
-                configMapKeyRef:
-                  name: mysql-config
+                secretKeyRef:
+                  name: mysql-secret
                   key: DB_HOST
             - name: DB_PORT
               valueFrom:
-                configMapKeyRef:
-                  name: mysql-config
+                secretKeyRef:
+                  name: mysql-secret
                   key: DB_PORT
             - name: DEBUG
               value: "0"
@@ -110,9 +103,9 @@ spec:
           persistentVolumeClaim:
             claimName: lowpoceat-static-pvc
 ---
-# -------------------------------
-# Service
-# -------------------------------
+# =====================================================================
+# SERVICE
+# =====================================================================
 apiVersion: v1
 kind: Service
 metadata:
@@ -127,9 +120,9 @@ spec:
       targetPort: 8000
   type: ClusterIP
 ---
-# -------------------------------
-# Ingress
-# -------------------------------
+# =====================================================================
+# INGRESS
+# =====================================================================
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
