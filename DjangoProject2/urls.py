@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-
+from django.http import HttpResponse
 # Admin site customizations
 admin.site.site_header = 'LowPocEat Admin'
 admin.site.index_title = 'Site Administration'
@@ -27,7 +27,11 @@ admin.site.site_title = 'LowPocEat Admin'
 urlpatterns = [
     path('admin/', admin.site.urls),  # Default admin URL
     path('', include('demo.urls')),
+    path("health', health),
 ]
+
+def health(request):
+    return HttpResponse("OK", status=200)
 
 # Serve static and media files in development
 if settings.DEBUG:
