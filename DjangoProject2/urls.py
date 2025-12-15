@@ -24,14 +24,14 @@ admin.site.site_header = 'LowPocEat Admin'
 admin.site.index_title = 'Site Administration'
 admin.site.site_title = 'LowPocEat Admin'
 
+def health(request):
+    return HttpResponse("OK", status=200)
+
 urlpatterns = [
     path('admin/', admin.site.urls),  # Default admin URL
     path('', include('demo.urls')),
-    path("health', health),
+    path("health", health),
 ]
-
-def health(request):
-    return HttpResponse("OK", status=200)
 
 # Serve static and media files in development
 if settings.DEBUG:
