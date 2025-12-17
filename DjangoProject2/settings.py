@@ -28,7 +28,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure--1m*-jifg9cn$l%-ndj9aa*q6saa7jgb4@!n+#0h#s+8dvmzag')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG', 'False') == 'True'
+DEBUG=True
+
 
 ALLOWED_HOSTS = ["*"]
 
@@ -45,6 +46,12 @@ INSTALLED_APPS = [
     'demo',  # Your app
 ]
 
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
