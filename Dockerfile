@@ -26,7 +26,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Collect static files (only in production)
-RUN python manage.py collectstatic --noinput --clear || echo "Warning: Collectstatic failed"
+RUN python manage.py collectstatic --noinput 
 
 # Expose the port the app runs on
 EXPOSE 8000
