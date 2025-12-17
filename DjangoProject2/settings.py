@@ -28,7 +28,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure--1m*-jifg9cn$l%-ndj9aa*q6saa7jgb4@!n+#0h#s+8dvmzag')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG=True
+DEBUG=os.getenv('DEBUG', 'False') == 'True'
 
 
 ALLOWED_HOSTS = ["*"]
@@ -94,7 +94,7 @@ DATABASES = {
         'USER': os.getenv('DB_USER'),
         'PASSWORD': os.getenv('DB_PASSWORD'),
         'HOST': os.getenv('DB_HOST'),  # Matches the service name in docker-compose.yml
-        'PORT': '3306',
+        'PORT': os.getenv('DB_PORT', '3306'),
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"
         }
@@ -148,8 +148,6 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
-
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Email Configuration - Gmail SMTP Setup Required
 # To enable email functionality:
