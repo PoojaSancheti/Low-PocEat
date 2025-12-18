@@ -142,7 +142,7 @@ STATICFILES_DIRS = [
     BASE_DIR / "demo/static",
 ]
 STATIC_ROOT = BASE_DIR / 'static'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
 # Media files (User uploaded content)
 MEDIA_URL = '/media/'
